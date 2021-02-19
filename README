@@ -1,31 +1,116 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This project was set up to practice some fundamental Ruby coding and to set up my first RubyGem, I have successfully installed it locally and tried it all out, below are the steps to re-create:
 
-Things you may want to cover:
+Build a RubyGem!
+At last, we now have everything in place to package up our game as a RubyGem!
 
-* Ruby version
+First, we need to tell RubyGems a bit about our application. We do that by writing a Gem specification file, or gemspec. The gemspec defines what's in the gem, who made it, the version of the gem, and so on. It's a manifest, of sorts.
 
-* System dependencies
+Rather than typing this in from scratch, go ahead and copy the following gemspec and paste it into a new file named knuckleheads.gemspec in the top-level application directory (the knuckleheads directory):
 
-* Configuration
 
-* Database creation
+Gem::Specification.new do |s|
+  s.name         = "INSERT GEM NAME HERE"
+  s.version      = "INSERT VERSION HERE"
+  s.author       = "INSERT YOUR NAME HERE"
+  s.email        = "INSERT YOUR EMAIL HERE"
+  s.homepage     = "INSERT HOMEPAGE URL HERE"
+  s.summary      = "INSERT SUMMARY HERE"
+  s.description  = File.read(File.join(File.dirname(__FILE__), 'README'))
+  s.licenses     = ['MIT']
 
-* Database initialization
+  s.files         = Dir["{bin,lib,spec}/**/*"] + %w(LICENSE README)
+  s.test_files    = Dir["spec/**/*"]
+  s.executables   = [ 'knuckleheads' ]
 
-* How to run the test suite
+  s.required_ruby_version = '>=1.9'
+  s.add_development_dependency 'rspec', '~> 2.8', '>= 2.8.0'
+end
 
-* Services (job queues, cache servers, search engines, etc.)
+Then you'll need to replace the placeholder text in the highlighted lines with your own information. It's fairly self-explanatory, but here's a quick overview:
 
-* Deployment instructions
+name: This field contains the gem name, which should be all lowercase letters with underscores or hyphens separating words. The name isn't just cosmetic—the name you choose here will show up as the name of the gem when folks install it. Also, if you plan to publish your gem to a public server (which we'll do in the next section), the gem must have a unique name. So unless you're the first person to complete this course, odds are there's already a public knuckleheads gem. But if you hurry, you could be the proud owner of that gem!
 
-* ...
+version: This field contains the gem version, which generally follows the major.minor.release numbering notation. For example, "1.0.0" would indicate the first major release of this gem. RubyGems uses this version string to name the gem package and also for dependency management, so it's important to use a consistent numbering strategy.
 
-irb:
+author: Your name, because all good artists sign their work. :-)
 
->> require 'studio_game/game'
+email: Your email, because all good developers support the code they write.
+
+homepage: A URL to the gem's homepage, because all good gems deserve a good home.
+
+summary: A really short description of the gem, say 5 or 6 words worth.
+
+description: A longer description of the gem. Here we're exploiting the fact that a gemspec is really just Ruby code. When we build the gem, any dynamic code in the gemspec will be run to create static text. In this case, we use the File class to read the contents of our README file in order to set the value of the description field. Nifty!
+
+licenses: An array of license abbreviations for the gem. Each license must be a short name, no more than 64 characters. The full text of the license should be inside of the LICENSE file. MIT is a popular choice for open-source software.
+
+files: An array of files to include in the gem package. Here's another example of using dynamic code. The Dir[] syntax returns the filenames found by expanding a given pattern (sometimes called a glob). In this case, we collect all the files beneath the bin, lib, and spec directories and also add in the README and LICENSE file.
+
+test_files: An array of just the test (spec) files. Test files will be loaded as unit tests when the user requests a gem to be unit tested.
+
+executables: An array of command-line scripts that RubyGems should install when folks install the gem. In this case, it's our knuckleheads script which by convention is assumed to be in the bin directory.
+
+required_ruby_version: This is really important. Since we used require_relative which is only supported in Ruby 1.9 or newer, this ensures that the gem can only be run with that version of Ruby.
+
+add_development_dependency: Since we used RSpec, it's good to list it as a development dependency. Development dependencies are not installed by default, and are not activated when the gem is activated.
+
+Whew! That was a whirlwind tour. Most of the time that's all you need, but for more details you can check out the full GemSpec reference.
+
+Once you've filled in your information, you're ready to build a gem. To do that, type:
+
+gem build knuckleheads.gemspec
+The build command reads and executes the gemspec, then generates a packaged .gem file. For example, if you named the gem knuckleheads and set the version to 1.0.0, then you'll end up with a file called knuckleheads-1.0.0.gem
+
+As a sanity check, go ahead and install it locally on your machine to test it out:
+
+gem install knuckleheads-1.0.0.gem
+Then, to check if it is indeed installed, type:
+
+gem list knuckleheads -d
+The -d option includes details about the gem (author, homepage, summary, etc.) in the listing.
+
+Now you should be able to open a new command prompt and run the command-line script like so:
+
+knuckleheads
+When you run a game without specifying a player file, you should see all the players from the default players.csv file that's packaged in the gem. That works because of the absolute path change we made earlier. You knew there had to be some upside to doing that...
+
+Finally, go ahead and uninstall it from your local machine:
+
+gem uninstall knuckleheads
+
+Publish It!
+At this point, we could share our package .gem file with our friends simply by e-mailing them the file or putting it on a shared server. Then they would need to install it just as we did previously. But if you don't mind sharing your gem with the rest of the world, there's a better way.
+
+RubyGems.org is the central repository for public gems. This is where Ruby programmers look for gems to use, and it's also where the gem install command looks for remote gems. It's like a clearinghouse of gems. So let's publish our game gem for the world to enjoy:
+
+First, you'll need to create an account on RubyGems.org. You only need to do this once, and then you can publish as many gems as you can dream up.
+
+This is also a good time to double-check that there's not already a public gem with the same name as your gem. Since RubyGems.org is the main repository for almost all open-source Ruby code, it's possible that the name of your gem is already taken. (We warned you that naming is one of the more challenging parts of programming!)
+
+Once you're sure that your gem name is available, push your .gem file to the public RubyGems.org server by typing:
+
+gem push knuckleheads-1.0.0.gem
+If this is the first time you push a gem, you'll be prompted for your username and password. These credentials are stored for future pushes.
+
+In just a few seconds, your gem will be available for installation by anyone in the world. To search for it on the public server, use:
+
+gem search -r knuckleheads
+And you should see a response like this:
+
+*** REMOTE GEMS ***
+
+knuckleheads (1.0.0)
+To install it from the remote server, use:
+
+gem install knuckleheads
+To play a game from the command-line, open a new command prompt and run the command-line script like so:
+
+knuckleheads
+Or, if you'd like to use the game as a library, here's an example of how to use it in irb:
+
+>> require 'knuckleheads/game'
 => true
 
 >> game = StudioGame::Game.new("Knuckleheads")

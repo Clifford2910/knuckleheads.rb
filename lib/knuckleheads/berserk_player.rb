@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+require_relative 'player'
+
+module Knuckleheads
+  class BerserkPlayer < Player
+    def initialize(name, health)
+      super(name, health)
+      @w00t_count = 0
+    end
+
+    def berserk?
+      @w00t_count > 5
+    end
+
+    def w00t
+      super
+      @w00t_count += 1
+      puts "#{@name} is berserk!" if berserk?
+    end
+
+    def blam
+      if berserk?
+        w00t
+      else
+        super
+      end
+    end
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  berserker = Knuckleheads::BerserkPlayer.new('berserker', 50)
+  6.times { berserker.w00t }
+  2.times { berserker.blam }
+  puts berserker.health
+end

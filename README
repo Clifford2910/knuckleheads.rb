@@ -1,0 +1,40 @@
+# README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
+
+irb:
+
+>> require 'studio_game/game'
+=> true
+
+>> game = StudioGame::Game.new("Knuckleheads")
+=> #<StudioGame::Game:0x007fdea10252d8 @title="Knuckleheads", @players=[]>
+
+>> player = StudioGame::Player.new("Moe", 90)
+=> I'm Moe with health = 90, points = 0, and score = 90.
+
+>> game.add_player(player)
+=> [I'm Moe with health = 90, points = 0, and score = 90.]
+
+>> game.play(1)
